@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciamento de Salas</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      text-align: center;
+      background-color: #2c3e50;
+      color: #fff;
+      padding: 20px;
+      margin: 0;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .container {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .section {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      width: 25%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .section h2 {
+      border-bottom: 2px solid #2c3e50;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      color: #2c3e50;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    input[type="text"], input[type="number"], input[type="date"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #2c3e50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background-color: #1a242f;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    ul li {
+      background-color: #f9f9f9;
+      margin: 5px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .separator {
+      background-color: #ccc;
+      width: 2px;
+      margin: 0 20px;
+    }
+  </style>
+  <script>
+    async function addMateria(event) {
+      event.preventDefault();
+      const nomeMateria = document.getElementById('nomeMateria').value;
+      const response = await fetch('/materia', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nomeMateria })
+      });
+      const result = await response.json();
+      alert(result.message);
+      loadMaterias();
+    }
+
+    async function removeMateria(event) {
+      event.preventDefault();
+      const idMateria = document.getElementById('removeIdMateria').value;
+      const response = await fetch('/removerMateria', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ idMateria })
+      });
+      const result = await response.json();
+      alert(result.message);
+      loadMaterias();
+    }
+
+    async function addResponsavel(event) {
+      event.preventDefault();
+      const nomeResponsavel = document.getElementById('nomeResponsavel').value;
+      const response = await fetch('/responsavel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nomeResponsavel })
+      });
+      const result = await response.json();
+      alert(result.message);
+      loadResponsaveis();
+    }
+
+    async function removeResponsavel(event) {
+      event.preventDefault();
+      const idResponsavel = document.getElementById('removeIdResponsavel').value;
+      const response = await fetch('/removerResponsavel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ idResponsavel })
+      });
+      const result = await response.json();
+      alert(result.message);
+      loadResponsaveis();
+    }
+
+    async function addSala(event) {
+      event.preventDefault();
+      const nomeSala = document.getElementById('nomeSala').value;
+      const capacidade = document.getElementById('capacidade').value;
+      const tipo = document.getElementById('tipo').value;
+      const response = await fetch('/sala', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nomeSala, capacidade, tipo })
+      });
+      const result = await response.json();
+      alert(result.message);
+      loadSalas();
+    }
+
+    async function removeSala(event) {
+      event.preventDefault();
+      const idSala = document.getElementById('removeIdSala').value;
+      const response = await fetch('/removerSala', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ idSala })
+      });
+      const result = await response.json();
+      alert(result.message);
+      loadSalas();
+    }
+
+    async function addAula(event) {
+      event.preventDefault();
+      const idSala = document.getElementById('idSala').value;
+      const data = document.getElementById('data').value;
+      const turno = document.getElementById('turno').value;
+      const idResponsavel = document.getElementById('idResponsavel').value;
+      const idMateria = document.getElementById('idMateria').value;
+      const response = await fetch('/aula', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ idSala, data, turno, idResponsavel, idMateria })
+      });
+      const result = await response.json();
+      alert(result.message);
+      loadAulas();
+    }
+
+    async function removeAula(event) {
+      event.preventDefault();
+      const idAula = document.getElementById('removeIdAula').value;
+      const response = await fetch('/removerAula', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ idAula })
+      });
+      const result = await response.json();
+      alert(result.message);
+      loadAulas();
+    }
+
+    async function loadMaterias() {
+      const response = await fetch('/materias');
+      const materias = await response.json();
+      const materiasList = document.getElementById('materiasList');
+      materiasList.innerHTML = '';
+      materias.forEach(materia => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${materia.IdMateria} - ${materia.NomeMateria}`;
+        materiasList.appendChild(listItem);
+      });
+    }
+
+    async function loadResponsaveis() {
+      const response = await fetch('/responsaveis');
+      const responsaveis = await response.json();
+      const responsaveisList = document.getElementById('responsaveisList');
+      responsaveisList.innerHTML = '';
+      responsaveis.forEach(responsavel => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${responsavel.IdResponsavel} - ${responsavel.NomeProfessor}`;
+        responsaveisList.appendChild(listItem);
+      });
+    }
+
+    async function loadSalas() {
+      const response = await fetch('/salas');
+      const salas = await response.json();
+      const salasList = document.getElementById('salasList');
+      salasList.innerHTML = '';
+      salas.forEach(sala => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${sala.IdSala} - ${sala.NomeSala} - Capacidade: ${sala.Capacidade} - Tipo: ${sala.Tipo}`;
+        salasList.appendChild(listItem);
+      });
+    }
+
+    async function loadAulas() {
+      const response = await fetch('/aulas');
+      const aulas = await response.json();
+      const aulasList = document.getElementById('aulasList');
+      aulasList.innerHTML = '';
+      aulas.forEach(aula => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Aula ${aula.IdAula} - Sala: ${aula.IdSala} - Data: ${aula.Data} - Turno: ${aula.Turno} - Responsável: ${aula.IdResponsavel} - Matéria: ${aula.IdMateria}`;
+        aulasList.appendChild(listItem);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMaterias();
+      loadResponsaveis();
+      loadSalas();
+      loadAulas();
+    });
+  </script>
+</head>
+<body>
+  <h1>Gerenciamento de Salas e Aulas</h1>
+  <div class="container">
+    <!-- Seção para adicionar e listar matérias -->
+    <div class="section">
+      <h2>Matérias</h2>
+      <form id="addMateriaForm" onsubmit="addMateria(event)">
+        <label for="nomeMateria">Nome da Matéria:</label>
+        <input type="text" id="nomeMateria" name="nomeMateria" required>
+        <button type="submit">Adicionar Matéria</button>
+      </form>
+      <form id="removeMateriaForm" onsubmit="removeMateria(event)">
+        <label for="removeIdMateria">ID da Matéria para Remover:</label>
+        <input type="number" id="removeIdMateria" name="removeIdMateria" required>
+        <button type="submit">Remover Matéria</button>
+      </form>
+      <ul id="materiasList">
+        <!-- Listagem das matérias -->
+      </ul>
+    </div>
+
+    <!-- Seção para adicionar e listar responsáveis -->
+    <div class="section separator"></div>
+
+    <div class="section">
+      <h2>Responsáveis</h2>
+      <form id="addResponsavelForm" onsubmit="addResponsavel(event)">
+        <label for="nomeResponsavel">Nome do Responsável:</label>
+        <input type="text" id="nomeResponsavel" name="nomeResponsavel" required>
+        <button type="submit">Adicionar Responsável</button>
+      </form>
+      <form id="removeResponsavelForm" onsubmit="removeResponsavel(event)">
+        <label for="removeIdResponsavel">ID do Responsável para Remover:</label>
+        <input type="number" id="removeIdResponsavel" name="removeIdResponsavel" required>
+        <button type="submit">Remover Responsável</button>
+      </form>
+      <ul id="responsaveisList">
+        <!-- Listagem dos responsáveis -->
+      </ul>
+    </div>
+
+    <!-- Seção para adicionar e listar salas -->
+    <div class="section separator"></div>
+
+    <div class="section">
+      <h2>Salas</h2>
+      <form id="addSalaForm" onsubmit="addSala(event)">
+        <label for="nomeSala">Nome da Sala:</label>
+        <input type="text" id="nomeSala" name="nomeSala" required>
+        <label for="capacidade">Capacidade:</label>
+        <input type="number" id="capacidade" name="capacidade" required>
+        <label for="tipo">Tipo:</label>
+        <input type="text" id="tipo" name="tipo" required>
+        <button type="submit">Adicionar Sala</button>
+      </form>
+      <form id="removeSalaForm" onsubmit="removeSala(event)">
+        <label for="removeIdSala">ID da Sala para Remover:</label>
+        <input type="number" id="removeIdSala" name="removeIdSala" required>
+        <button type="submit">Remover Sala</button>
+      </form>
+      <ul id="salasList">
+        <!-- Listagem das salas -->
+      </ul>
+    </div>
+
+    <!-- Seção para adicionar e listar aulas -->
+    <div class="section separator"></div>
+
+    <div class="section">
+      <h2>Aulas</h2>
+      <form id="addAulaForm" onsubmit="addAula(event)">
+        <label for="idSala">ID da Sala:</label>
+        <input type="number" id="idSala" name="idSala" required>
+        <label for="data">Data:</label>
+        <input type="date" id="data" name="data" required>
+        <label for="turno">Turno:</label>
+        <input type="text" id="turno" name="turno" required>
+        <label for="idResponsavel">ID do Responsável:</label>
+        <input type="number" id="idResponsavel" name="idResponsavel" required>
+        <label for="idMateria">ID da Matéria:</label>
+        <input type="number" id="idMateria" name="idMateria" required>
+        <button type="submit">Adicionar Aula</button>
+      </form>
+      <form id="removeAulaForm" onsubmit="removeAula(event)">
+        <label for="removeIdAula">ID da Aula para Remover:</label>
+        <input type="number" id="removeIdAula" name="removeIdAula" required>
+        <button type="submit">Remover Aula</button>
+      </form>
+      <ul id="aulasList">
+        <!-- Listagem das aulas -->
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
